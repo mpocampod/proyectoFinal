@@ -1,0 +1,12 @@
+package transacciones;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CuentaRepository extends JpaRepository<CuentaBancaria, Long> {
+    boolean existsByNumeroCuenta(String numeroCuenta);
+    Optional<CuentaBancaria> findByNumeroCuenta(String numeroCuenta);
+    @Modifying
+    @Query("UPDATE CuentaBancaria c SET c.bloqueada = true WHERE c.numeroCuenta = :numeroCuenta")
+    int bloquearCuentaByNumeroCuenta(@Param("numeroCuenta") String numeroCuenta);
+}

@@ -1,0 +1,53 @@
+package transacciones;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CuentaService {
+
+    @Autowired
+    private CuentaRepository cuentaRepository;
+
+    public Cuenta crearCuenta(Cuenta nuevaCuenta) {
+        return cuentaRepository.save(nuevaCuenta);
+    }
+
+    public Cuenta depositar(String numeroCuenta, double monto) {
+        Cuenta cuenta = cuentaRepository.findByNumeroCuenta(numeroCuenta)
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+        
+        cuenta.setSaldo(cuenta.getSaldo() + monto);
+        return cuentaRepository.save(cuenta);
+    }
+
+    public void transferir(Long idOrigen, Long idDestino, double monto) {
+
+        Cuenta cuentaOrigen = cuentaRepository.findById(idOrigen)
+                .orElseThrow(() -> new RuntimeException("Cuenta de origen no encontrada"));
+        Cuenta cuentaDestino = cuentaRepository.findById(idDestino)
+                .orElseThrow(() -> new RuntimeException("Cuenta de destino no encontrada"));
+
+        if (cuentaOrigen.getSaldo() < monto) {
+                    throw new RuntimeException("La cuenta de origen no tiene suficientes fondos para realizar la transferencia");
+        }
+        
+        cuentaOrigen.setSaldo(cuentaOrigen.getSaldo() - monto);
+        cuentaDestino.setSaldo(cuentaDestino.getSaldo() + monto);
+        
+        cuentaRepository.save(cuentaOrigen);
+        cuentaRepository.save(cuentaDestino);
+    }
+
+    public Cuenta consultarCuenta(Long id) {
+        return cuentaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+    }
+
+    public void bloquearCuenta(Long id) {
+        Cuenta cuenta = cuentaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+        
+        cuenta.setBloqueada(true);
+        cuentaRepository.save(cuenta);
+    }
+}

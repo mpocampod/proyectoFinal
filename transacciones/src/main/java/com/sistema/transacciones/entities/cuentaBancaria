@@ -1,0 +1,64 @@
+package transacciones;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class CuentaBancaria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nombre;
+    private String numeroCuenta;
+    private double saldo;
+    private boolean bloqueada;
+    private String cuentaOrigen;
+    private String cuentaDestino;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String nombre() {
+        return nombre;
+    }
+
+    public String getNumeroCuenta() {
+        return numeroCuenta;
+    }
+
+    public void setNumeroCuenta(String numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
+    }
+    
+    public String getCuentaOrigen() {
+        return cuentaOrigen;
+    }
+
+    public String getCuentaDestino() {
+        return cuentaDestino;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public boolean isBloqueada() {
+        return bloqueada;
+    }
+
+    public void setBloqueada(boolean bloqueada) {
+        this.bloqueada = bloqueada;
+    }
+    
+}

@@ -1,0 +1,45 @@
+package com.sistema.transacciones;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+
+@RestController
+public class Cuenta {
+
+    @Autowired
+    private CuentaService cuentaService;
+
+    @PostMapping("/crear")
+    public ResponseEntity<Cuenta> crearCuenta(@RequestBody Cuenta nuevaCuenta) {
+        Cuenta cuentaCreada = cuentaService.crearCuenta(nuevaCuenta);
+        return ResponseEntity.ok(cuentaCreada);
+    }
+
+    @PostMapping("/depositar")
+    public ResponseEntity<Cuenta> depositar(@PathVariable String numeroCuenta, @RequestParam double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor que cero");
+        }
+        Cuenta cuenta = cuentaService.depositar(numeroCuenta, monto);
+        return ResponseEntity.ok(cuenta);
+    }
+
+    @PostMapping("/transferir")
+    public ResponseEntity<String> transferir(@PathVariable Long idOrigen, @PathVariable Long idDestino, @RequestParam double monto) {
+        cuentaService.transferir(idOrigen, idDestino, monto);
+        return ResponseEntity.ok("Transferencia realizada con éxito");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Cuenta> consultarCuenta(@PathVariable Long id) {
+        Cuenta cuenta = cuentaService.consultarCuenta(id);
+        return ResponseEntity.ok(cuenta);
+    }
+
+    @PutMapping("/{id}/bloquear")
+    public ResponseEntity<String> bloquearCuenta(@PathVariable Long id) {
+        cuentaService.bloquearCuenta(id);
+        return ResponseEntity.ok("Cuenta bloqueada con éxito");
+    }
+
+}
